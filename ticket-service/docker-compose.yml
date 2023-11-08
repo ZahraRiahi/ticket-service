@@ -1,0 +1,26 @@
+version: '3'
+services:
+  mysql:
+    image: mysql:latest
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=1
+      - MYSQL_DATABASE=ticketsystemdb
+    ports:
+      - '3306:3306'
+    volumes:
+      - ./ticketsystemdb.sql:/docker-entrypoint-initdb.d/ticketsystemdb.sql
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '8900:8900'
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/ticketsystemdb?useSSL=false
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=
+    depends_on:
+      - mysql
+#volumes:
+#  mysql_data:
